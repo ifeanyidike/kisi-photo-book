@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="item">
-      <img :src="`http://localhost:5001/${item.image}`" :alt="item.title" />
+      <img :src="`${baseUrl}/${item.image}`" :alt="item.title" />
       <div class="detail">
         <p class="title">{{ item.title }}</p>
         <p class="description">{{ item.description }}</p>
@@ -12,6 +12,7 @@
 
 <script setup>
 import { toRefs } from 'vue'
+const baseUrl = import.meta.env.VITE_BASE_URL
 const props = defineProps(['item'])
 const { item } = toRefs(props)
 </script>

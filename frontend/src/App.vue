@@ -23,13 +23,15 @@
 import ImageList from './components/ImageList.vue'
 import { ref, onMounted } from 'vue'
 
+const baseUrl = import.meta.env.VITE_BASE_URL
+
 const items = ref([])
 const loading = ref(false)
 
 onMounted(async () => {
   try {
     loading.value = true
-    const res = await fetch(`http://localhost:5001/images`)
+    const res = await fetch(`${baseUrl}/images`)
     items.value = await res.json()
     loading.value = false
   } catch (error) {
@@ -44,7 +46,7 @@ const handleUploadImage = async (e) => {
     formData.append('img', file)
     formData.append('itemSize', items.value.length)
 
-    const response = await fetch(`http://localhost:5001/upload-image`, {
+    const response = await fetch(`${baseUrl}/upload-image`, {
       method: 'POST',
       body: formData
     })

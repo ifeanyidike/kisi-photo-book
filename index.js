@@ -3,7 +3,6 @@ const path = require('path')
 const fs = require('fs')
 const cors = require('cors')
 const multer = require("multer");
-
 const articles = require('./data/articles.json')
 
 const app = express()
@@ -23,15 +22,29 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const {fieldname, originalname} = file
-    const originalNameSplit = originalname.split('.')
+    const { fieldname, originalname } = file;
+    const originalNameSplit = originalname.split(".");
     const ext = originalNameSplit[originalNameSplit.length - 1];
-     
+
     cb(null, `${fieldname}-${uniqueSuffix}.${ext}`);
   },
 });
 
-const upload = multer({ storage: storage });
+//allow only jpg, jpeg, png files. Otherwise throw error.
+const fileFilter = (req, file, cb) => {
+  const isAllowedFileType =
+    file.mimetype == "image/jpeg" ||
+    file.mimetype == "image/jpg" ||
+    file.mimetype == "image/png";
+
+  if (isAllowedFileType) {
+    cb(null, true);
+    return;
+  }
+  cb(new Error("Only image files are allowed"), false);
+};
+
+const upload = multer({ storage, fileFilter });
 
 /**
  * GET ROUTE - Get all images in the images directory
@@ -63,11 +76,15 @@ app.get('/images', (req, res) => {
  * Return the image filename with correct title and description.
  */
 app.post("/upload-image", upload.single("img"), (req, res) => {
-    const { itemSize } = req.body
-    const num = Number(itemSize) + 1;
-    const info = articles[num % articles.length];
+    try {
+      const { itemSize } = req.body;
+      const num = Number(itemSize) + 1;
+      const info = articles[num % articles.length];
 
-    res.json({ image: req.file.filename, ...info });
+      res.status(200).json({ image: req.file.filename, ...info });
+    } catch (error) {
+      throw new Error(error.message)
+    }
 });
 
 app.use(express.static(path.join(__dirname, "./frontend/dist")));

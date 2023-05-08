@@ -51,8 +51,14 @@ const handleUploadImage = async (e) => {
       body: formData
     })
 
-    const data = await response.json()
-    items.value.push(data)
+    if(response.status === 200){
+      const data = await response.json()
+      items.value.push(data)
+    } else {
+      alert("Please select an image file to upload")
+    }
+
+    
   } catch (error) {
     console.log(error)
   }

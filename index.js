@@ -79,13 +79,18 @@ app.get('/images', (req, res) => {
  */
 app.post("/upload-image", upload.single("img"), (req, res) => {
     try {
+      const image = req.file?.filename
+     
+      if(!image){
+        return res.status(500).send("Only image files are allowed");
+      }
       const { itemSize } = req.body;
       const num = Number(itemSize) + 1;
       const info = articles[num % articles.length];
 
-      res.status(200).json({ image: req.file.filename, ...info });
+      res.status(200).json({ image, ...info });
     } catch (error) {
-      throw new Error("Only image files are allowed");
+      return res.status(500).send("Only image files are allowed");
     }
 });
 

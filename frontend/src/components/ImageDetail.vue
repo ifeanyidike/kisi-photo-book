@@ -72,4 +72,26 @@ img {
 .item:hover img {
   opacity: 0;
 }
+
+@media screen and (max-width: 470px) {
+  .title {
+    font-size: 1.1rem
+  }
+
+  .description {
+    line-height: 1.2;
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .title {
+    font-size: 1rem
+  }
+
+  .description {
+    line-height: 1.1;
+    font-size: 0.85rem;
+  }
+}
 </style>

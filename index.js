@@ -40,8 +40,8 @@ const fileFilter = (req, file, cb) => {
   if (isAllowedFileType) {
     cb(null, true);
     return;
-  }else{
-    cb(new Error("Only image files are allowed"), false);
+  } else {
+    cb(null, false);
   }
   
 };
@@ -85,7 +85,7 @@ app.post("/upload-image", upload.single("img"), (req, res) => {
 
       res.status(200).json({ image: req.file.filename, ...info });
     } catch (error) {
-      throw new Error(error.message)
+      throw new Error("Only image files are allowed");
     }
 });
 
